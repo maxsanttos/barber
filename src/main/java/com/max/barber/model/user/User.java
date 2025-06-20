@@ -1,4 +1,4 @@
-package com.max.barber.model;
+package com.max.barber.model.user;
 
 import java.util.Collection;
 import java.util.List;

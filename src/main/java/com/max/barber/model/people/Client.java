@@ -1,4 +1,6 @@
-package com.max.barber.model;
+package com.max.barber.model.people;
+
+import com.max.barber.model.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

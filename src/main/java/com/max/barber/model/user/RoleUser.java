@@ -1,4 +1,4 @@
-package com.max.barber.model;
+package com.max.barber.model.user;
 
 public enum RoleUser {
     CLIENT("CLIENT"),
