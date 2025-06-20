@@ -1,11 +1,9 @@
 package com.max.barber.model;
 
 public enum RoleUser {
-    CLIENTE("CLIENTE"),
+    CLIENT("CLIENT"),
     ADMIN("ADMIN");
     
-
-
     private final String role;
 
     RoleUser(String role) {
