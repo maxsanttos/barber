@@ -1,7 +1,5 @@
 package com.max.barber.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,16 +77,6 @@ public class UserService {
     public User getUserById(Long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com id: " + id));
-    }
-
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    @Transactional
-    public void deleteUserById(Long id){
-        User user = getUserById(id);
-        userRepository.delete(user);
     }
 }
 

@@ -3,6 +3,8 @@ package com.max.barber.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.max.barber.model.people.Barber;
@@ -22,24 +24,18 @@ public class BarberService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // listar todos os clientes
 
-    public List<Barber> getAllClients() {
-        return repository.findAll();
-    }
 
+   
     
-    public Barber getBarberByLoggedUser() {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-        return repository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Barbeiro não encontrado para o usuário: " + username));
-    }
-
-
-    public Barber getBarberById(Long id) {
-    return repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Barbeiro não encontrado com id: " + id));
+    public Barber getLoggedInUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String login = ((UserDetails) principal).getUsername();
+            return repository.findByUsername(login)
+                .orElseThrow(() -> new IllegalArgumentException("Barbeiro logado não encontrado: " + login));
+        }
+        throw new SecurityException("Barbeiro não autenticado.");
     }
 
     @Transactional
@@ -68,4 +64,19 @@ public class BarberService {
         return repository.save(barber);
     }
 
+    public List<Barber> getAllClients() {
+        return repository.findAll();
+    }
+
+
+    public Barber getBarberById(Long id) {
+    return repository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Barbeiro não encontrado com id: " + id));
+    }
+
+    @Transactional
+    public void deleteBarberById(Long id){
+        Barber barber = getBarberById(id);
+        repository.delete(barber);
+    }
 }

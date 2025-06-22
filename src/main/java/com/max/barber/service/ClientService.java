@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.max.barber.model.people.Barber;
 import com.max.barber.model.people.Client;
 import com.max.barber.model.user.User;
 import com.max.barber.repository.ClientRepository;
@@ -21,18 +22,7 @@ public class ClientService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // listar todos os clientes
-
-    public List<Client> getAllClients() {
-        return clientRepository.findAll();
-    }
-
-    // buscar cliente por id
-    public Client getClientById(Long id) {
-        return clientRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com id: " + id));
-    }
-
+  
     // buscar cliente pelo usuário logado
     public Client getClientByLoggedUser() {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
@@ -65,4 +55,15 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+    // buscar cliente por id
+    public Client getClientById(Long id) {
+        return clientRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com id: " + id));
+    }
+
+     @Transactional
+    public void deleteClientById(Long id){
+        Client client = getClientById(id);
+        clientRepository.delete(client);
+    }
 }
