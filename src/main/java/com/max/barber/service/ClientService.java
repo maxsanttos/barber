@@ -1,11 +1,8 @@
 package com.max.barber.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.max.barber.model.people.Barber;
 import com.max.barber.model.people.Client;
 import com.max.barber.model.user.User;
 import com.max.barber.repository.ClientRepository;
