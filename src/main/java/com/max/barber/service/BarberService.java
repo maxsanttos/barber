@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.max.barber.model.people.Barber;
 import com.max.barber.model.user.User;
@@ -14,6 +15,7 @@ import com.max.barber.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+@Service
 public class BarberService {
 
      

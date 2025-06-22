@@ -45,5 +45,5 @@ public class Appointment {
 
     @JsonIgnore
     @OneToMany(mappedBy = "appointment",cascade = CascadeType.ALL)
-    private List<Service> services = new ArrayList<>();
+    private List<Services> services = new ArrayList<>();
 }

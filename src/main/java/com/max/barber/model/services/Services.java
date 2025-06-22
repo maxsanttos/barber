@@ -17,7 +17,7 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-public class Service {
+public class Services {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +29,5 @@ public class Service {
     
     @ManyToOne
     @JoinColumn(name = "appointment_id")
-    private Appointment appointment;
+    private Appointment appointment; 
 }
