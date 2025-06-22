@@ -23,8 +23,8 @@ public class ServicesService {
     private AppointmentRepository appointmentRepository;
     
     //Listar todos os serviços disponíveis
-    public List<String> getAllServices() {
-        return serviceRepository.findAllServices();
+    public List<Services> getAllServices() {
+        return serviceRepository.findAll();
     }
 
     // Buscar serviços por ID
