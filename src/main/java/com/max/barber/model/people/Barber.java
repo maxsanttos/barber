@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.max.barber.model.services.Appointment;
+import com.max.barber.model.user.RoleUser;
 import com.max.barber.model.user.User;
 
 import jakarta.persistence.Column;
@@ -34,11 +35,14 @@ public class Barber {
     @Column(name = "specialty", nullable = false)
     private String specialty;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @Column(name = "role", nullable = false)
+    private  RoleUser role;
 
     @JsonIgnore
     @OneToMany(mappedBy = "barber")
     private List<Appointment> appointments = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 }

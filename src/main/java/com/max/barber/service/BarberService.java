@@ -2,6 +2,8 @@ package com.max.barber.service;
 
 import java.util.List;
 
+import com.max.barber.model.people.dtos.UpdateBarberDTO;
+import com.max.barber.model.user.RoleUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,9 +29,6 @@ public class BarberService {
     private PasswordEncoder passwordEncoder;
 
 
-
-   
-    
     public Barber getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -41,32 +40,48 @@ public class BarberService {
     }
 
     @Transactional
-    public Barber updateBarber(Long id, String specialty, String username, String password, User currentUser) {
+    public Barber updateBarber(Long id, UpdateBarberDTO dto, Barber currentBarber) {
         Barber barber = getBarberById(id);
+        User user = barber.getUser();
 
-        // Só permite se for o próprio usuário
-        if (!barber.getUser().getId().equals(currentUser.getId())) {
-            throw new SecurityException("Você não tem permissão para atualizar este cadastro.");
+        boolean isBarber = currentBarber.getRole().equals(RoleUser.BARBER);
+        boolean isOwner = currentBarber.getId().equals(barber.getId());
+
+        if (!isBarber && !isOwner) {
+            throw new SecurityException("Você não tem permissão para atualizar este Barbeiro.");
         }
 
-        if (specialty != null && !specialty.isBlank()) {
-            barber.setSpecialty(specialty);
-        }
-        if (username != null && !username.isBlank()) {
-            if (!username.equals(barber.getUser().getUsername()) && userRepository.findByUsername(username).isPresent()) {
-                throw new IllegalArgumentException("Nome já está em uso.");
+        // Atualiza username
+        if (dto.username() != null && !dto.username().isBlank()) {
+            if (!dto.username().equals(user.getUsername()) && userRepository.findByUsername(dto.username()).isPresent()) {
+                throw new IllegalArgumentException("Nome de usuário já está em uso.");
             }
-            barber.getUser().setUsername(username);
-        }
-        if (password != null && !password.isBlank()) {
-            barber.getUser().setPassword(passwordEncoder.encode(password));
+            user.setUsername(dto.username());
         }
 
-        userRepository.save(barber.getUser());
+        // Atualiza senha
+        if (dto.password() != null && !dto.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.password()));
+        }
+
+        // Atualiza especialidade
+        if (dto.specialty() != null && !dto.specialty().isBlank()) {
+            barber.setSpecialty(dto.specialty());
+        }
+
+        // Atualiza role se fornecida (admin ou o próprio barbeiro)
+        if (dto.role() != null && isBarber) {
+            user.setRole(dto.role());
+            barber.setRole(dto.role());
+        }
+
+        userRepository.save(user);
         return repository.save(barber);
     }
 
-    public List<Barber> getAllClients() {
+
+
+    public List<Barber> getAllBarbers() {
         return repository.findAll();
     }
 
