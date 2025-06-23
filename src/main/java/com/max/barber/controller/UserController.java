@@ -54,6 +54,7 @@ public class UserController {
         if (this.repository.findByUsername(data.username()).isPresent()){
             return ResponseEntity.badRequest().build();
         }
+        
         String encrytedPassword = passwordEncoder.encode(data.password());
         User newUser = new User(data.username(), data.password(), data.role());
 

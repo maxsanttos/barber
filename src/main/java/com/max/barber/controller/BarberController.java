@@ -2,8 +2,6 @@ package com.max.barber.controller;
 
 import com.max.barber.model.people.Barber;
 import com.max.barber.model.people.dtos.UpdateBarberDTO;
-import com.max.barber.model.user.dtos.RegisterDTO;
-import com.max.barber.model.user.dtos.UserInfoDTO;
 import com.max.barber.service.BarberService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
