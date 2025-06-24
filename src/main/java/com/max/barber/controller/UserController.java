@@ -56,7 +56,7 @@ public class UserController {
         }
         
         String encrytedPassword = passwordEncoder.encode(data.password());
-        User newUser = new User(data.username(), data.password(), data.role());
+        User newUser = new User(data.username(), encrytedPassword, data.role());
 
         this.repository.save(newUser);
         String token = tokenService.generateToken(newUser);
