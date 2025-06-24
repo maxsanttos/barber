@@ -3,6 +3,8 @@ package com.max.barber.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +30,15 @@ public class ClientService {
     private PasswordEncoder passwordEncoder;
 
   
-    // buscar cliente pelo usuário logado
-    public Client getClientByLoggedUser() {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-        return clientRepository.findByUserUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para o usuário: " + username));
+
+    public Client getLoggedInUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String login = ((UserDetails) principal).getUsername();
+            return clientRepository.findByUserUsername(login)
+                .orElseThrow(() -> new IllegalArgumentException("Barbeiro logado não encontrado: " + login));
+        }
+        throw new SecurityException("Cliente não autenticado.");
     }
 
     @Transactional
