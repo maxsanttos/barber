@@ -20,8 +20,10 @@ public class ClientService {
     
     @Autowired
     private ClientRepository clientRepository;
+    
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -33,6 +35,7 @@ public class ClientService {
         return clientRepository.findByUserUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para o usuário: " + username));
     }
+
     @Transactional
     public Client updateClient(Long id, UpdateClientDTO dto, Client currentClient) {
         Client client = getClientById(id);
@@ -50,10 +53,12 @@ public class ClientService {
             }
             user.setUsername(dto.username());
         }
+
         // Atualiza senha
         if (dto.password() != null && !dto.password().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.password()));
         }
+
         // Atualiza telefone
         if (dto.phoneNumber() != null && !dto.phoneNumber().isBlank()) {
             client.setPhoneNumber(dto.phoneNumber());
@@ -66,6 +71,7 @@ public class ClientService {
             user.setRole(dto.role());
             client.setRole(dto.role());
         }
+
         // Salva as alterações
         userRepository.save(user);
         return clientRepository.save(client);
@@ -82,7 +88,7 @@ public class ClientService {
         .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com id: " + id));
     }
 
-     @Transactional
+    @Transactional
     public void deleteClientById(Long id){
         Client client = getClientById(id);
         clientRepository.delete(client);
