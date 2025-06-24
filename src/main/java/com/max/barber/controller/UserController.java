@@ -8,7 +8,6 @@ import com.max.barber.model.user.dtos.RegisterDTO;
 import com.max.barber.model.user.dtos.UserInfoDTO;
 import com.max.barber.repository.UserRepository;
 import com.max.barber.service.TokenService;
-import com.max.barber.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +26,6 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private TokenService tokenService;
@@ -65,7 +61,7 @@ public class UserController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
         List<User> users = repository.findAll();
         List<UserInfoDTO> userInfoDTOS = users.stream()
