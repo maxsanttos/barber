@@ -1,10 +1,14 @@
 package com.max.barber.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.max.barber.model.people.Client;
+import com.max.barber.model.people.dtos.UpdateClientDTO;
+import com.max.barber.model.user.RoleUser;
 import com.max.barber.model.user.User;
 import com.max.barber.repository.ClientRepository;
 import com.max.barber.repository.UserRepository;
@@ -30,28 +34,46 @@ public class ClientService {
                 .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado para o usuário: " + username));
     }
     @Transactional
-    public Client updateClient(Long id, String phoneNumber, String username, String password, User currentUser) {
+    public Client updateClient(Long id, UpdateClientDTO dto, Client currentClient) {
         Client client = getClientById(id);
+        User user = client.getUser();
 
-        // Só permite se for o próprio usuário
-        if (!client.getUser().getId().equals(currentUser.getId())) {
-            throw new SecurityException("Você não tem permissão para atualizar este cadastro.");
+        boolean isClient = currentClient.getRole().equals(RoleUser.CLIENT);
+        boolean isOwner = currentClient.getId().equals(client.getId());
+        if (!isClient && !isOwner) {
+            throw new SecurityException("Você não tem permissão para atualizar este Cliente.");
         }
-
-        if (phoneNumber != null && !phoneNumber.isBlank()) {
-            client.setPhoneNumber(phoneNumber);
-        }
-        if (username != null && !username.isBlank()) {
-            if (!username.equals(client.getUser().getUsername()) && userRepository.findByUsername(username).isPresent()) {
-                throw new IllegalArgumentException("Nome já está em uso.");
+        // Atualiza username
+        if (dto.username() != null && !dto.username().isBlank()) {
+            if (!dto.username().equals(user.getUsername()) && userRepository.findByUsername(dto.username()).isPresent()) {
+                throw new IllegalArgumentException("Nome de usuário já está em uso.");
             }
-            client.getUser().setUsername(username);
+            user.setUsername(dto.username());
         }
-        if (password != null && !password.isBlank()) {
-            client.getUser().setPassword(passwordEncoder.encode(password));
+        // Atualiza senha
+        if (dto.password() != null && !dto.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.password()));
         }
-        userRepository.save(client.getUser());
+        // Atualiza telefone
+        if (dto.phoneNumber() != null && !dto.phoneNumber().isBlank()) {
+            client.setPhoneNumber(dto.phoneNumber());
+            
+        }
+        if (dto.role() != null && isClient) {
+            if (dto.role() != RoleUser.CLIENT) {
+                throw new IllegalArgumentException("Apenas clientes podem ter o papel CLIENT.");
+            }
+            user.setRole(dto.role());
+            client.setRole(dto.role());
+        }
+        // Salva as alterações
+        userRepository.save(user);
         return clientRepository.save(client);
+
+    }
+
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 
     // buscar cliente por id
