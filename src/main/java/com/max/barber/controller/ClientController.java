@@ -1,7 +1,11 @@
 package com.max.barber.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +35,21 @@ public class ClientController {
         return ResponseEntity.ok(updatedClient);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Client>> getAllClients(){
+        List<Client> clients = clientService.getAllClients();
+        return ResponseEntity.ok(clients);
+    }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<Client> getClientById(@PathVariable Long id) {
+        Client client = clientService.getClientById(id);
+        return ResponseEntity.ok(client);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        clientService.deleteClientById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
