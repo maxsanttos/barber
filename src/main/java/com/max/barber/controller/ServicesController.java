@@ -1,6 +1,5 @@
 package com.max.barber.controller;
 
-import com.max.barber.model.people.Barber;
 import com.max.barber.model.services.Services;
 import com.max.barber.model.services.dtos.UpdateServiceDTO;
 import com.max.barber.service.ServicesService;
