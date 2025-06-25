@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.max.barber.model.services.Appointment;
 import com.max.barber.model.services.Services;
+import com.max.barber.model.services.dtos.UpdateServiceDTO;
 import com.max.barber.repository.AppointmentRepository;
 import com.max.barber.repository.ServiceRepository;
 
@@ -47,14 +48,14 @@ public class ServicesService {
 
     // Atualizar serviço existente
     @Transactional
-    public Services updateServices(Long id, String name, String description, Double price, String duration){
+    public Services updateServices(Long id, UpdateServiceDTO dto){
         Services service = serviceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service not found with id: " + id));
         
-        service.setName(name);
-        service.setDescription(description);
-        service.setPrice(price);
-        service.setDuration(duration);
+        if (dto.name() != null) service.setName(dto.name());
+        if (dto.description() != null) service.setDescription(dto.description());
+        if (dto.price() != null) service.setPrice(dto.price());
+        if (dto.duration() != null) service.setDuration(dto.duration());
         
         return serviceRepository.save(service);
     }
