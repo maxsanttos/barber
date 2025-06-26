@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -60,12 +61,11 @@ public class UserController {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{id}")
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers(){
+    @GetMapping
+    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
         List<User> users = repository.findAll();
         List<UserInfoDTO> userInfoDTOS = users.stream()
-                .map(user -> new UserInfoDTO(user.getId(), user.getUsername(),user.getRole()))
+                .map(user -> new UserInfoDTO(user.getId(), user.getUsername(), user.getRole()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userInfoDTOS);
     }
